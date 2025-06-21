@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:DataType="vm:OfferDetailsViewModel"
+             x:Class="BiznesApp.Views.OfferDetailsPage"
+             Title="Szczegóły oferty"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- Header -->
+            <Label Text="Szczegóły oferty" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            
+            <!-- Offer Details Card -->
+            <Border Padding="20" 
+                    StrokeShape="RoundRectangle 16,16,16,16"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                <Border.Shadow>
+                    <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <StackLayout Spacing="16">
+                    <Grid ColumnDefinitions="*,Auto" RowSpacing="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Name -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Nazwa oferty:" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Offer.Name}" FontSize="16" HorizontalTextAlignment="End" />
+                        
+                        <!-- Status -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Status:" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Offer.Status}" FontSize="16" TextColor="{Binding Offer.Status, Converter={StaticResource StatusToColorConverter}}" />
+                        
+                        <!-- Price -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Kwota:" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding Offer.Price, StringFormat='{0:C}'}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource BusinessGreen}" />
+                        
+                        <!-- Description -->
+                        <Label Grid.Row="3" Grid.ColumnSpan="2" Text="Opis:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0"/>
+                        <Label Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding Offer.Description}" FontSize="14" />
+                    </Grid>
+                </StackLayout>
+            </Border>
+            
+            <!-- Action Buttons -->
+            <VerticalStackLayout Spacing="12" Margin="0,20,0,0">
+                <Button Text="✅ Przekształć w zamówienie" 
+                        Command="{Binding ConvertToOrderCommand}"
+                        BackgroundColor="{StaticResource Success}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+                <Button Text="✏️ Edytuj" 
+                        Command="{Binding EditCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+                <Button Text="🗑️ Usuń" 
+                        Command="{Binding DeleteCommand}"
+                        BackgroundColor="{StaticResource Error}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+                <Button Text="🔙 Powrót" 
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="{StaticResource Secondary}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+            </VerticalStackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage> 

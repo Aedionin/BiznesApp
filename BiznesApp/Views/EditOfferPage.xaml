@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:DataType="vm:EditOfferViewModel"
+             x:Class="BiznesApp.Views.EditOfferPage"
+             Title="Dodaj/Edytuj ofertę"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- Header -->
+            <Label Text="Formularz oferty" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            
+            <!-- Form Card -->
+            <Border Padding="20" 
+                    StrokeShape="RoundRectangle 16,16,16,16"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                <Border.Shadow>
+                    <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <StackLayout Spacing="16">
+                    <Label Text="Nazwa oferty:" FontAttributes="Bold" FontSize="16" />
+                    <Entry Placeholder="Wprowadź nazwę oferty" Text="{Binding CurrentOffer.Name}" Style="{StaticResource EntryStyle}" />
+                    
+                    <Label Text="Kwota:" FontAttributes="Bold" FontSize="16" />
+                    <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding CurrentOffer.Price}" Style="{StaticResource EntryStyle}" />
+                    
+                    <Label Text="Opis:" FontAttributes="Bold" FontSize="16" />
+                    <Editor Placeholder="Wprowadź szczegółowy opis oferty" Text="{Binding CurrentOffer.Description}" AutoSize="TextChanges" MinimumHeightRequest="100" />
+                    
+                    <Label Text="Status:" FontAttributes="Bold" FontSize="16" />
+                    <Picker Title="Wybierz status" SelectedItem="{Binding CurrentOffer.Status}">
+                        <Picker.Items>
+                            <x:String>Wysłana</x:String>
+                            <x:String>Zaakceptowana</x:String>
+                            <x:String>Odrzucona</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </StackLayout>
+            </Border>
+            
+            <!-- Action Buttons -->
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">
+                <Button Text="💾 Zapisz" 
+                        Command="{Binding SaveOfferCommand}"
+                        BackgroundColor="{StaticResource Success}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+                
+                <Button Text="🔙 Anuluj" 
+                        Clicked="OnCancelClicked"
+                        BackgroundColor="{StaticResource Warning}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+            </HorizontalStackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage> 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:DataType="vm:SettingsViewModel"
+             x:Class="BiznesApp.Views.SettingsPage"
+             Title="Ustawienia"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <!-- Header -->
+            <Label Text="Ustawienia" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+
+            <!-- Theme Settings Card -->
+            <Border Padding="20" 
+                    StrokeShape="RoundRectangle 16,16,16,16"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                <Border.Shadow>
+                    <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <StackLayout Spacing="16">
+                    <Label Text="Wygląd aplikacji" FontAttributes="Bold" FontSize="18" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Tryb ciemny" 
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding IsDark}"
+                                OnColor="{StaticResource BusinessBlue}"
+                                ThumbColor="{AppThemeBinding Light=White, Dark={StaticResource Gray300}}" />
+                    </Grid>
+                </StackLayout>
+            </Border>
+
+            <!-- Account Actions Card -->
+            <Border Padding="20" 
+                    StrokeShape="RoundRectangle 16,16,16,16"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                <Border.Shadow>
+                    <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <Button Text="Wyloguj się"
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="{StaticResource Error}"
+                        HorizontalOptions="Fill" />
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

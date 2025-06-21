@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="BiznesApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:BiznesApp.Views"
+    Title="BiznesApp">
+
+    <!-- Ekran startowy: logowanie -->
+    <ShellContent Title="Logowanie" ContentTemplate="{DataTemplate views:LoginPage}" Route="LoginPage" />
+
+    <!-- TabBar pojawia się po zalogowaniu (nawigacja do //OrdersPage) -->
+    <TabBar Route="MainFlow">
+        <ShellContent Title="Zamówienia" ContentTemplate="{DataTemplate views:OrdersPage}" Route="OrdersPage" />
+        <ShellContent Title="Oferty" ContentTemplate="{DataTemplate views:OffersPage}" Route="OffersPage" />
+        <ShellContent Title="Raporty" ContentTemplate="{DataTemplate views:ReportsPage}" Route="ReportsPage" />
+        <ShellContent Title="Ustawienia" ContentTemplate="{DataTemplate views:SettingsPage}" Route="SettingsPage" />
+    </TabBar>
+
+    <!-- Dodatkowe strony -->
+    
+</Shell>

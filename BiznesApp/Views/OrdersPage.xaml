@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             xmlns:models="clr-namespace:BiznesApp.Models"
+             x:Class="BiznesApp.Views.OrdersPage"
+             x:DataType="vm:OrdersViewModel"
+             x:Name="ordersPage"
+             Title="Lista zamówień"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="EmptyStateLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*" Padding="16">
+        <!-- Header -->
+        <StackLayout Grid.Row="0" Spacing="16" Margin="0,0,0,16">
+            <Label Text="Lista zamówień" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            
+            <Button Text="➕ Dodaj zamówienie" 
+                    Command="{Binding AddNewOrderCommand}"
+                    BackgroundColor="{StaticResource Success}"
+                    CornerRadius="24"
+                    Padding="20,12"
+                    HorizontalOptions="Center" />
+        </StackLayout>
+
+        <!-- Orders List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Orders}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnOrderSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Order">
+                    <Border Margin="8" Padding="20"
+                            StrokeShape="RoundRectangle 16,16,16,16"
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                        <Border.Shadow>
+                            <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                        </Border.Shadow>
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontAttributes="Bold" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Amount, StringFormat='{0:C}'}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource BusinessGreen}" HorizontalOptions="End" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding Status}" FontSize="14" TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" Margin="0,8,0,0" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <!-- Empty State View -->
+        <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+            <VerticalStackLayout.Style>
+                <Style TargetType="VerticalStackLayout">
+                    <Setter Property="IsVisible" Value="False" />
+                    <Style.Triggers>
+                        <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding Orders.Count}" Value="0">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </VerticalStackLayout.Style>
+            <Label Text="📄" FontSize="80" HorizontalOptions="Center" />
+            <Label Text="Brak zamówień" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="Dodaj swoje pierwsze zamówienie, aby zacząć." HorizontalOptions="Center" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+            <Button Text="➕ Dodaj pierwsze zamówienie" Command="{Binding AddNewOrderCommand}" BackgroundColor="{StaticResource Success}" CornerRadius="24" Padding="20,12" Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage> 

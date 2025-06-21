@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:Class="BiznesApp.Views.OrderDetailsPage"
+             x:DataType="vm:OrderDetailsViewModel"
+             Title="Szczegóły Zamówienia">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            <Label Text="{Binding Order.Name}" FontSize="Large" FontAttributes="Bold" />
+            <Label Text="{Binding Order.Amount, StringFormat='Kwota: {0:C}'}" />
+            <Label Text="{Binding Order.Status, StringFormat='Status: {0}'}" />
+            <Image Source="{Binding Order.PhotoPath}" HeightRequest="200" Aspect="AspectFit" IsVisible="{Binding Order.PhotoPath, Converter={StaticResource StringToBoolConverter}}" />
+
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">
+                <Button Text="✏️ Edytuj" 
+                        Command="{Binding EditCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+                
+                <Button Text="🗑️ Usuń" 
+                        Command="{Binding DeleteCommand}"
+                        BackgroundColor="{StaticResource Error}"
+                        CornerRadius="24"
+                        Padding="20,12" />
+            </HorizontalStackLayout>
+            <Button Text="🔙 Powrót" 
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="{StaticResource Secondary}"
+                    CornerRadius="24"
+                    Padding="20,12"
+                    HorizontalOptions="Center" 
+                    Margin="0,10,0,0"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

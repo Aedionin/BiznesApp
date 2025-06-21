@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:Class="BiznesApp.Views.ReportsPage"
+             x:DataType="vm:ReportsViewModel"
+             Title="Raporty"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            <Label Text="Pulpit Menedżera" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                   Margin="0,0,0,20"/>
+
+            <Grid RowSpacing="15" ColumnSpacing="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Karta: Aktywne zamówienia -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Style="{StaticResource CardLayoutStyle}">
+                        <Label Text="📈" Style="{StaticResource IconStyle}" />
+                        <Label Text="Aktywne zamówienia" Style="{StaticResource CardTitleStyle}" />
+                        <Label Text="{Binding ActiveOrdersCount}" Style="{StaticResource CardValueStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Karta: Wartość zrealizowanych -->
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Style="{StaticResource CardLayoutStyle}">
+                        <Label Text="💰" Style="{StaticResource IconStyle}" />
+                        <Label Text="Wartość zrealizowanych" Style="{StaticResource CardTitleStyle}" />
+                        <Label Text="{Binding CompletedOrdersValue, StringFormat='{0:C}'}" Style="{StaticResource CardValueStyle}" TextColor="{StaticResource BusinessGreen}"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Karta: Oczekujące oferty -->
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Style="{StaticResource CardLayoutStyle}">
+                        <Label Text="⏳" Style="{StaticResource IconStyle}" />
+                        <Label Text="Oczekujące oferty" Style="{StaticResource CardTitleStyle}" />
+                        <Label Text="{Binding PendingOffersCount}" Style="{StaticResource CardValueStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Karta: Konwersja -->
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Style="{StaticResource CardLayoutStyle}">
+                        <Label Text="🎯" Style="{StaticResource IconStyle}" />
+                        <Label Text="Konwersja ofert" Style="{StaticResource CardTitleStyle}" />
+                        <Label Text="{Binding ConversionRate, StringFormat='{0:F2}%'}" Style="{StaticResource CardValueStyle}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

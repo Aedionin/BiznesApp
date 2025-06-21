@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             x:Class="BiznesApp.Views.RegisterPage"
+             x:DataType="vm:RegisterViewModel"
+             Title="Rejestracja"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <Grid RowDefinitions="*,Auto,*" Padding="24">
+        <!-- Title Area -->
+        <StackLayout Grid.Row="0" 
+                     VerticalOptions="Center" 
+                     HorizontalOptions="Center"
+                     Spacing="16">
+            <Label Text="📝" 
+                   FontSize="64" 
+                   HorizontalOptions="Center" />
+            <Label Text="Stwórz konto" 
+                   FontSize="32" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource BusinessBlue}, Dark={StaticResource BusinessBlue}}" />
+            <Label Text="Dołącz do BiznesApp" 
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </StackLayout>
+
+        <!-- Registration Form -->
+        <Frame Grid.Row="1" 
+               Padding="24" 
+               CornerRadius="20"
+               HasShadow="True"
+               BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+            <StackLayout Spacing="20">
+                <Entry Placeholder="✉️ Email" 
+                       Text="{Binding Email}"
+                       Keyboard="Email"
+                       FontSize="16"
+                       MinimumHeightRequest="50" />
+                
+                <Entry Placeholder="🔒 Hasło" 
+                       IsPassword="True" 
+                       Text="{Binding Password}"
+                       FontSize="16"
+                       MinimumHeightRequest="50" />
+
+                <Entry Placeholder="🔒 Potwierdź hasło" 
+                       IsPassword="True" 
+                       Text="{Binding ConfirmPassword}"
+                       FontSize="16"
+                       MinimumHeightRequest="50" />
+                
+                <Button Text="✅ Zarejestruj" 
+                        Command="{Binding RegisterCommand}"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        MinimumHeightRequest="50"
+                        BackgroundColor="{StaticResource BusinessGreen}" />
+            </StackLayout>
+        </Frame>
+
+        <!-- Footer / Navigation to Login -->
+        <StackLayout Grid.Row="2" 
+                     VerticalOptions="End"
+                     HorizontalOptions="Center"
+                     Margin="0,20,0,0">
+            <Label HorizontalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Masz już konto? "
+                              TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}"/>
+                        <Span Text="Zaloguj się"
+                              TextColor="{StaticResource Primary}"
+                              FontAttributes="Bold">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
+    </Grid>
+</ContentPage> 
