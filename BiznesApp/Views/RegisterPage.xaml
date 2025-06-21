@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             xmlns:viewmodels="clr-namespace:BiznesApp.ViewModels"
+             x:DataType="viewmodels:RegisterViewModel"
              x:Class="BiznesApp.Views.RegisterPage"
-             x:DataType="vm:RegisterViewModel"
              Title="Rejestracja"
              BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
 
@@ -34,9 +34,8 @@
                HasShadow="True"
                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
             <StackLayout Spacing="20">
-                <Entry Placeholder="✉️ Email" 
-                       Text="{Binding Email}"
-                       Keyboard="Email"
+                <Entry Placeholder="Nazwa użytkownika" 
+                       Text="{Binding Username}"
                        FontSize="16"
                        MinimumHeightRequest="50" />
                 
@@ -51,6 +50,8 @@
                        Text="{Binding ConfirmPassword}"
                        FontSize="16"
                        MinimumHeightRequest="50" />
+                
+                <Label Text="{Binding ErrorMessage}" TextColor="Red" HorizontalOptions="Center" />
                 
                 <Button Text="✅ Zarejestruj" 
                         Command="{Binding RegisterCommand}"

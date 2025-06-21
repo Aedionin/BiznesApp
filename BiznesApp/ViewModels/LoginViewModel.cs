@@ -1,3 +1,4 @@
+using BiznesApp.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -6,22 +7,49 @@ namespace BiznesApp.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string username = string.Empty;
+        private readonly AuthService _authService;
 
         [ObservableProperty]
-        private string password = string.Empty;
+        private string _username = string.Empty;
 
-        public LoginViewModel()
+        [ObservableProperty]
+        private string _password = string.Empty;
+
+        [ObservableProperty]
+        private string _errorMessage = string.Empty;
+
+        public LoginViewModel(AuthService authService)
         {
-            // Konstruktor pozostaje pusty
+            _authService = authService;
         }
 
         [RelayCommand]
         private async Task Login()
         {
-            // TODO: Wywołaj logowanie do backendu/Azure (API)
-            await Shell.Current.GoToAsync("//OrdersPage");
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Nazwa użytkownika i hasło są wymagane.";
+                return;
+            }
+
+            try
+            {
+                var token = await _authService.LoginAsync(Username, Password);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await SecureStorage.SetAsync("auth_token", token);
+                    // Nawigacja do głównej części aplikacji
+                    await Shell.Current.GoToAsync("//MainFlow/OrdersPage");
+                }
+                else
+                {
+                    ErrorMessage = "Logowanie nie powiodło się. Sprawdź dane uwierzytelniające.";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Wystąpił błąd: {ex.Message}";
+            }
         }
 
         [RelayCommand]

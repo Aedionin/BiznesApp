@@ -3,93 +3,102 @@ using BiznesApp.ViewModels;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.Maui.Controls;
 
 namespace BiznesApp.Services
 {
     public class DataService
     {
-        private ObservableCollection<Order> Orders { get; set; }
-        private ObservableCollection<Offer> Offers { get; set; }
+        private readonly HttpClient _httpClient;
+        private readonly string _baseAddress;
 
         public DataService()
         {
-            // Inicjalizacja z danymi przykładowymi
-            Orders = new ObservableCollection<Order>
-            {
-                new Order { Id = 1, Name = "Zamówienie na komputery", Status = "W realizacji", Amount = 12000 },
-                new Order { Id = 2, Name = "Licencje na oprogramowanie", Status = "Zakończone", Amount = 4500 },
-                new Order { Id = 3, Name = "Szkolenie dla zespołu", Status = "Nowe", Amount = 8000 }
-            };
-
-            Offers = new ObservableCollection<Offer>
-            {
-                new Offer { Id = 1, Name = "Strona internetowa dla firmy X", Description = "Stworzenie nowoczesnej strony WWW.", Price = 5000, Status = "Wysłana" },
-                new Offer { Id = 2, Name = "Aplikacja mobilna dla sklepu", Description = "Projekt i wdrożenie aplikacji na Android/iOS.", Price = 25000, Status = "Zaakceptowana" },
-                new Offer { Id = 3, Name = "Optymalizacja SEO", Description = "Audyt i pozycjonowanie serwisu.", Price = 2000, Status = "Odrzucona" }
-            };
+            _httpClient = new HttpClient();
+            // Adres API. Używamy 10.0.2.2 dla emulatora Androida, aby uzyskać dostęp do localhost hosta.
+            _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5136" : "http://localhost:5136";
         }
 
-        public Task<ObservableCollection<Order>> GetOrders() => Task.FromResult(Orders);
-        public Task<ObservableCollection<Offer>> GetOffers() => Task.FromResult(Offers);
-
-        // Metody do zarządzania danymi (CRUD)
-
-        public Task AddOrder(Order order)
+        private async Task SetAuthorizationHeader()
         {
-            order.Id = Orders.Any() ? Orders.Max(o => o.Id) + 1 : 1;
-            Orders.Add(order);
-            return Task.CompletedTask;
-        }
-
-        public Task AddOffer(Offer offer)
-        {
-            offer.Id = Offers.Any() ? Offers.Max(o => o.Id) + 1 : 1;
-            Offers.Add(offer);
-            return Task.CompletedTask;
-        }
-
-        public Task UpdateOffer(Offer updatedOffer)
-        {
-            var offer = Offers.FirstOrDefault(o => o.Id == updatedOffer.Id);
-            if (offer != null)
+            var token = await SecureStorage.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
             {
-                offer.Name = updatedOffer.Name;
-                offer.Description = updatedOffer.Description;
-                offer.Price = updatedOffer.Price;
-                offer.Status = updatedOffer.Status;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            return Task.CompletedTask;
+            else
+            {
+                // Wyczyść nagłówek, jeśli token jest pusty - np. po wylogowaniu
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
-        public Task UpdateOrder(Order updatedOrder)
+        // --- Metody dla Zamówień ---
+
+        public async Task<ObservableCollection<Order>> GetOrders()
         {
-            var order = Orders.FirstOrDefault(o => o.Id == updatedOrder.Id);
-            if (order != null)
+            await SetAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"{_baseAddress}/api/orders");
+            if (response.IsSuccessStatusCode)
             {
-                order.Name = updatedOrder.Name;
-                order.Amount = updatedOrder.Amount;
-                order.Status = updatedOrder.Status;
-                order.PhotoPath = updatedOrder.PhotoPath;
+                var orders = await response.Content.ReadFromJsonAsync<ObservableCollection<Order>>();
+                return orders ?? new ObservableCollection<Order>();
             }
-            return Task.CompletedTask;
+            return new ObservableCollection<Order>();
         }
 
-        public Task DeleteOffer(Offer offer)
+        public async Task AddOrder(Order order)
         {
-            if (offer != null)
-            {
-                Offers.Remove(offer);
-            }
-            return Task.CompletedTask;
+            await SetAuthorizationHeader();
+            await _httpClient.PostAsJsonAsync($"{_baseAddress}/api/orders", order);
         }
 
-        public Task DeleteOrder(Order order)
+        public async Task UpdateOrder(Order updatedOrder)
         {
-            if (order != null)
+            await SetAuthorizationHeader();
+            await _httpClient.PutAsJsonAsync($"{_baseAddress}/api/orders/{updatedOrder.Id}", updatedOrder);
+        }
+
+        public async Task DeleteOrder(Order order)
+        {
+            await SetAuthorizationHeader();
+            await _httpClient.DeleteAsync($"{_baseAddress}/api/orders/{order.Id}");
+        }
+
+        // --- Metody dla Ofert ---
+
+        public async Task<ObservableCollection<Offer>> GetOffers()
+        {
+            await SetAuthorizationHeader();
+            var response = await _httpClient.GetAsync($"{_baseAddress}/api/offers");
+            if (response.IsSuccessStatusCode)
             {
-                Orders.Remove(order);
+                var offers = await response.Content.ReadFromJsonAsync<ObservableCollection<Offer>>();
+                return offers ?? new ObservableCollection<Offer>();
             }
-            return Task.CompletedTask;
+            return new ObservableCollection<Offer>();
+        }
+
+        public async Task AddOffer(Offer offer)
+        {
+            await SetAuthorizationHeader();
+            await _httpClient.PostAsJsonAsync($"{_baseAddress}/api/offers", offer);
+        }
+
+        public async Task UpdateOffer(Offer updatedOffer)
+        {
+            await SetAuthorizationHeader();
+            await _httpClient.PutAsJsonAsync($"{_baseAddress}/api/offers/{updatedOffer.Id}", updatedOffer);
+        }
+
+        public async Task DeleteOffer(Offer offer)
+        {
+            await SetAuthorizationHeader();
+            await _httpClient.DeleteAsync($"{_baseAddress}/api/offers/{offer.Id}");
         }
     }
 } 

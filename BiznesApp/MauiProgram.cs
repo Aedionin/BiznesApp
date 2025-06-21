@@ -25,6 +25,7 @@ namespace BiznesApp
 
             // Rejestracja usług
             builder.Services.AddSingleton<Services.DataService>();
+            builder.Services.AddSingleton<Services.AuthService>();
 
             // Rejestracja ViewModeli
             builder.Services.AddSingleton<LoginViewModel>();

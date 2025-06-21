@@ -26,10 +26,10 @@
                 </Border.Shadow>
                 <StackLayout Spacing="16">
                     <Label Text="Nazwa oferty:" FontAttributes="Bold" FontSize="16" />
-                    <Entry Placeholder="Wprowadź nazwę oferty" Text="{Binding CurrentOffer.Name}" Style="{StaticResource EntryStyle}" />
+                    <Entry Placeholder="Wprowadź nazwę oferty" Text="{Binding CurrentOffer.Name}" />
                     
                     <Label Text="Kwota:" FontAttributes="Bold" FontSize="16" />
-                    <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding CurrentOffer.Price}" Style="{StaticResource EntryStyle}" />
+                    <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding CurrentOffer.Price}" />
                     
                     <Label Text="Opis:" FontAttributes="Bold" FontSize="16" />
                     <Editor Placeholder="Wprowadź szczegółowy opis oferty" Text="{Binding CurrentOffer.Description}" AutoSize="TextChanges" MinimumHeightRequest="100" />

@@ -124,22 +124,13 @@ namespace BiznesApp.ViewModels
             if (isNew)
             {
                 await _dataService.AddOrder(CurrentOrder);
-            }
-            else
-            {
-                await _dataService.UpdateOrder(CurrentOrder);
-            }
-            
-            await Shell.Current.DisplayAlert("Sukces", "Zamówienie zostało zapisane.", "OK");
 
-            if(isNew)
-            {
+#if !WINDOWS
                 var request = new NotificationRequest
                 {
-                    NotificationId = 1337,
-                    Title = "Dodano nowe zamówienie",
-                    Subtitle = CurrentOrder.Name,
-                    Description = $"Kwota: {CurrentOrder.Amount:C}",
+                    NotificationId = 1000,
+                    Title = "Nowe zamówienie",
+                    Description = $"Dodano nowe zamówienie: {CurrentOrder.Name}",
                     BadgeNumber = 42,
                     Schedule = new NotificationRequestSchedule
                     {
@@ -147,7 +138,14 @@ namespace BiznesApp.ViewModels
                     }
                 };
                 await LocalNotificationCenter.Current.Show(request);
+#endif
             }
+            else
+            {
+                await _dataService.UpdateOrder(CurrentOrder);
+            }
+            
+            await Shell.Current.DisplayAlert("Sukces", "Zamówienie zostało zapisane.", "OK");
 
             await Shell.Current.GoToAsync("..");
         }

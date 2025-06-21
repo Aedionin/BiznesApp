@@ -1,3 +1,4 @@
+using BiznesApp.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -6,40 +7,57 @@ namespace BiznesApp.ViewModels
 {
     public partial class RegisterViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string email = string.Empty;
+        private readonly AuthService _authService;
 
         [ObservableProperty]
-        private string password = string.Empty;
+        private string _username = string.Empty;
 
         [ObservableProperty]
-        private string confirmPassword = string.Empty;
+        private string _password = string.Empty;
 
-        public RegisterViewModel()
+        [ObservableProperty]
+        private string _confirmPassword = string.Empty;
+
+        [ObservableProperty]
+        private string _errorMessage = string.Empty;
+
+        public RegisterViewModel(AuthService authService)
         {
-            // Konstruktor pozostaje pusty
+            _authService = authService;
         }
 
         [RelayCommand]
         private async Task Register()
         {
-            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
-                await Shell.Current.DisplayAlert("Błąd", "Wszystkie pola są wymagane.", "OK");
+                ErrorMessage = "Nazwa użytkownika i hasło są wymagane.";
                 return;
             }
 
             if (Password != ConfirmPassword)
             {
-                await Shell.Current.DisplayAlert("Błąd", "Hasła nie są zgodne.", "OK");
+                ErrorMessage = "Hasła nie są zgodne.";
                 return;
             }
 
-            // TODO: Tutaj w przyszłości będzie wywołanie API do rejestracji
-
-            await Shell.Current.DisplayAlert("Sukces", "Rejestracja zakończona pomyślnie! Możesz się teraz zalogować.", "OK");
-
-            await GoToLogin();
+            try
+            {
+                var success = await _authService.RegisterAsync(Username, Password);
+                if (success)
+                {
+                    // Powrót do strony logowania z komunikatem
+                    await Shell.Current.GoToAsync("..?success=true");
+                }
+                else
+                {
+                    ErrorMessage = "Rejestracja nie powiodła się. Użytkownik może już istnieć.";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Wystąpił błąd: {ex.Message}";
+            }
         }
 
         [RelayCommand]

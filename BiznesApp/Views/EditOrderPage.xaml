@@ -33,8 +33,7 @@
                            FontSize="16"
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                     <Entry Placeholder="Wprowadź nazwę zamówienia" 
-                           Text="{Binding CurrentOrder.Name}"
-                           Style="{StaticResource EntryStyle}" />
+                           Text="{Binding CurrentOrder.Name}" />
                     
                     <Label Text="Kwota:" 
                            FontAttributes="Bold" 
@@ -42,8 +41,7 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                     <Entry Placeholder="0.00" 
                            Keyboard="Numeric" 
-                           Text="{Binding CurrentOrder.Amount}"
-                           Style="{StaticResource EntryStyle}" />
+                           Text="{Binding CurrentOrder.Amount}" />
                     
                     <Label Text="Status:" 
                            FontAttributes="Bold" 
