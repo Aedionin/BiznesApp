@@ -5,6 +5,7 @@ using BiznesApp.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BiznesApp.ViewModels
 {
@@ -47,7 +48,11 @@ namespace BiznesApp.ViewModels
         [RelayCommand]
         public async Task AddNewOrder()
         {
-            await Shell.Current.GoToAsync(nameof(EditOrderPage));
+            var newOrder = new Order();
+            await Shell.Current.GoToAsync(nameof(EditOrderPage), new Dictionary<string, object>
+            {
+                { "CurrentOrder", newOrder }
+            });
         }
     }
 } 

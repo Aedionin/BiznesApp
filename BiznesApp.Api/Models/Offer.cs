@@ -11,5 +11,8 @@ namespace BiznesApp.Api.Models
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string? Location { get; set; }
+        
+        // Kluczowe: Pole do powiązania oferty z użytkownikiem
+        public string UserId { get; set; } = string.Empty;
     }
 } 

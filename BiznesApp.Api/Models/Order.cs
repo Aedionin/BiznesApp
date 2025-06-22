@@ -8,4 +8,7 @@ public class Order
     public decimal Amount { get; set; }
     public string? PhotoPath { get; set; }
     public string? Location { get; set; }
+    
+    // Kluczowe: Pole do powiązania zamówienia z użytkownikiem
+    public string UserId { get; set; } = string.Empty;
 } 

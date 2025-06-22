@@ -2,6 +2,7 @@ using BiznesApp.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BiznesApp.Api.Controllers
 {
@@ -20,12 +21,28 @@ namespace BiznesApp.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .ToListAsync();
         }
 
         [HttpPost]
         public async Task<ActionResult<Order>> AddOrder([FromBody] Order order)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            order.UserId = userId; // Automatycznie przypisz właściciela
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, order);
@@ -34,10 +51,22 @@ namespace BiznesApp.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] Order updatedOrder)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
+            }
+            
+            // Sprawdź, czy użytkownik jest właścicielem zamówienia
+            if (order.UserId != userId)
+            {
+                return Forbid(); // Użytkownik nie ma uprawnień
             }
 
             order.Name = updatedOrder.Name;
@@ -54,10 +83,22 @@ namespace BiznesApp.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
+            }
+            
+            // Sprawdź, czy użytkownik jest właścicielem zamówienia
+            if (order.UserId != userId)
+            {
+                return Forbid(); // Użytkownik nie ma uprawnień
             }
 
             _context.Orders.Remove(order);
