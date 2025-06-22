@@ -12,6 +12,15 @@ namespace BiznesApp.Views
             BindingContext = viewModel;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is EditOrderViewModel viewModel)
+            {
+                await viewModel.OnAppearing();
+            }
+        }
+
         private async void OnCancelClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("..");

@@ -91,6 +91,7 @@ namespace BiznesApp.ViewModels
                     {
                         var address = response.Substring(startIndex, endIndex - startIndex);
                         CurrentOffer.Location = address;
+                        OnPropertyChanged(nameof(CurrentOffer)); // Powiadom UI o zmianie
                     }
                 }
             }
@@ -98,6 +99,7 @@ namespace BiznesApp.ViewModels
             {
                 // Jeśli nie udało się pobrać adresu, użyj współrzędnych jako lokalizacji
                 CurrentOffer.Location = $"GPS: {latitude:F6}, {longitude:F6}";
+                OnPropertyChanged(nameof(CurrentOffer)); // Powiadom UI o zmianie
                 System.Diagnostics.Debug.WriteLine($"Błąd geokodowania: {ex.Message}");
             }
         }

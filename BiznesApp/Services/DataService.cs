@@ -47,6 +47,22 @@ namespace BiznesApp.Services
             return await _databaseService.GetItems<Order>();
         }
 
+        public async Task<Order> GetOrderById(int orderId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/orders/{orderId}");
+                response.EnsureSuccessStatusCode();
+                var order = await response.Content.ReadFromJsonAsync<Order>();
+                return order;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetOrderById: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task AddOrder(Order order)
         {
             await SetAuthorizationHeader();

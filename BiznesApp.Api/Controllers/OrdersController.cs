@@ -23,6 +23,19 @@ namespace BiznesApp.Api.Controllers
             return await _context.Orders.ToListAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrder(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return order;
+        }
+
         [HttpPost]
         public async Task<ActionResult<Order>> AddOrder([FromBody] Order order)
         {

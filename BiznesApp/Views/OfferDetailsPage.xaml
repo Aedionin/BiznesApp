@@ -32,46 +32,37 @@
                     <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
                 </Border.Shadow>
                 <StackLayout Spacing="16">
-                    <Grid ColumnDefinitions="*,Auto" RowSpacing="12">
+                    <Grid ColumnDefinitions="Auto,*" RowSpacing="12" ColumnSpacing="16">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         
                         <!-- Name -->
-                        <Label Grid.Row="0" Grid.Column="0" Text="Nazwa oferty:" FontAttributes="Bold" FontSize="16" />
+                        <Label Grid.Row="0" Grid.Column="0" Text="Nazwa:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
                         <Label Grid.Row="0" Grid.Column="1" Text="{Binding Offer.Name}" FontSize="16" HorizontalTextAlignment="End" />
                         
                         <!-- Status -->
-                        <Label Grid.Row="1" Grid.Column="0" Text="Status:" FontAttributes="Bold" FontSize="16" />
-                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Offer.Status}" FontSize="16" TextColor="{Binding Offer.Status, Converter={StaticResource StatusToColorConverter}}" />
+                        <Label Grid.Row="1" Grid.Column="0" Text="Status:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Offer.Status}" FontSize="16" TextColor="{Binding Offer.Status, Converter={StaticResource StatusToColorConverter}}" HorizontalTextAlignment="End" />
                         
                         <!-- Price -->
-                        <Label Grid.Row="2" Grid.Column="0" Text="Kwota:" FontAttributes="Bold" FontSize="16" />
-                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding Offer.Price, StringFormat='{0:C}'}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource BusinessGreen}" />
-                        
-                        <!-- Location -->
-                        <Label Grid.Row="3" Grid.Column="0" Text="Lokalizacja:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Location, Converter={StaticResource IsNotNullConverter}}" />
-                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding Offer.Location}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Location, Converter={StaticResource IsNotNullConverter}}"/>
-                        
-                        <!-- Latitude -->
-                        <Label Grid.Row="4" Grid.Column="0" Text="Szer. geo.:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Latitude, Converter={StaticResource IsNotNullConverter}}" />
-                        <Label Grid.Row="4" Grid.Column="1" Text="{Binding Offer.Latitude}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Latitude, Converter={StaticResource IsNotNullConverter}}"/>
-
-                        <!-- Longitude -->
-                        <Label Grid.Row="5" Grid.Column="0" Text="Dł. geo.:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Longitude, Converter={StaticResource IsNotNullConverter}}" />
-                        <Label Grid.Row="5" Grid.Column="1" Text="{Binding Offer.Longitude}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Longitude, Converter={StaticResource IsNotNullConverter}}"/>
-
-                        <!-- Description -->
-                        <Label Grid.Row="6" Grid.ColumnSpan="2" Text="Opis:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0"/>
-                        <Label Grid.Row="7" Grid.ColumnSpan="2" Text="{Binding Offer.Description}" FontSize="14" />
+                        <Label Grid.Row="2" Grid.Column="0" Text="Kwota:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding Offer.Price, StringFormat='{0:C}'}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource BusinessGreen}" HorizontalTextAlignment="End" />
                     </Grid>
+                    
+                    <!-- Location -->
+                    <StackLayout Spacing="4" IsVisible="{Binding Offer.Location, Converter={StaticResource IsNotNullConverter}}">
+                        <Label Text="Lokalizacja:" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="{Binding Offer.Location}" FontSize="14" />
+                    </StackLayout>
+
+                    <!-- Description -->
+                    <StackLayout Spacing="4">
+                        <Label Text="Opis:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0"/>
+                        <Label Text="{Binding Offer.Description}" FontSize="14" />
+                    </StackLayout>
                 </StackLayout>
             </Border>
             
@@ -81,22 +72,30 @@
                         Command="{Binding ConvertToOrderCommand}"
                         BackgroundColor="{StaticResource Success}"
                         CornerRadius="24"
-                        Padding="20,12" />
-                <Button Text="✏️ Edytuj" 
-                        Command="{Binding EditCommand}"
-                        BackgroundColor="{StaticResource Primary}"
-                        CornerRadius="24"
-                        Padding="20,12" />
-                <Button Text="🗑️ Usuń" 
-                        Command="{Binding DeleteCommand}"
-                        BackgroundColor="{StaticResource Error}"
-                        CornerRadius="24"
-                        Padding="20,12" />
-                <Button Text="🔙 Powrót" 
-                        Command="{Binding GoBackCommand}"
-                        BackgroundColor="{StaticResource Secondary}"
-                        CornerRadius="24"
-                        Padding="20,12" />
+                        Padding="16,12" />
+
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                    <Button Grid.Column="0"
+                            Text="🔙 Powrót" 
+                            Command="{Binding GoBackCommand}"
+                            BackgroundColor="{StaticResource Secondary}"
+                            CornerRadius="24"
+                            Padding="16,12" />
+
+                    <Button Grid.Column="1"
+                            Text="✏️ Edytuj" 
+                            Command="{Binding EditCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            CornerRadius="24"
+                            Padding="16,12" />
+
+                    <Button Grid.Column="2"
+                            Text="🗑️ Usuń" 
+                            Command="{Binding DeleteCommand}"
+                            BackgroundColor="{StaticResource Error}"
+                            CornerRadius="24"
+                            Padding="16,12" />
+                </Grid>
             </VerticalStackLayout>
         </StackLayout>
     </ScrollView>

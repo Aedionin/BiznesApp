@@ -62,7 +62,14 @@ namespace BiznesApp
             builder.Services.AddSingleton<OffersViewModel>();
             builder.Services.AddSingleton<SettingsViewModel>();
             builder.Services.AddSingleton<ReportsViewModel>();
-            builder.Services.AddTransient<EditOrderViewModel>();
+            builder.Services.AddTransient<EditOrderViewModel>(provider =>
+            {
+                var dataService = provider.GetRequiredService<Services.DataService>();
+                var mediaPicker = provider.GetRequiredService<IMediaPicker>();
+                var geolocation = provider.GetRequiredService<IGeolocation>();
+                var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("GeocodingClient");
+                return new EditOrderViewModel(dataService, mediaPicker, geolocation, httpClient);
+            });
             builder.Services.AddTransient<EditOfferViewModel>(provider =>
             {
                 var dataService = provider.GetRequiredService<Services.DataService>();

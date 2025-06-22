@@ -61,8 +61,14 @@
                            FontAttributes="Bold" 
                            FontSize="16"
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
-                    <Entry Placeholder="Wprowadź lokalizację (np. adres)" 
-                           Text="{Binding CurrentOrder.Location}" />
+                    <Label Text="📍 Lokalizacja zostanie automatycznie pobrana z urządzenia" 
+                           FontSize="12" 
+                           TextColor="{StaticResource Secondary}"
+                           Margin="0,0,0,10" />
+                    <Label Text="{Binding CurrentOrder.Location}" 
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                           IsVisible="{Binding CurrentOrder.Location, Converter={StaticResource StringToBoolConverter}}" />
                     
                     <HorizontalStackLayout Spacing="12" Margin="0,10,0,0" HorizontalOptions="Center">
                         <Button Text="📎 Wybierz plik" 

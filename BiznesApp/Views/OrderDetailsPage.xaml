@@ -4,36 +4,94 @@
              xmlns:vm="clr-namespace:BiznesApp.ViewModels"
              x:Class="BiznesApp.Views.OrderDetailsPage"
              x:DataType="vm:OrderDetailsViewModel"
-             Title="Szczegóły Zamówienia">
+             Title="Szczegóły Zamówienia"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:StringToBoolConverter xmlns:converters="clr-namespace:BiznesApp.Converters" x:Key="StringToBoolConverter" />
+            <converters:IsNotNullConverter xmlns:converters="clr-namespace:BiznesApp.Converters" x:Key="IsNotNullConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
-            <Label Text="{Binding Order.Name}" FontSize="Large" FontAttributes="Bold" />
-            <Label Text="{Binding Order.Amount, StringFormat='Kwota: {0:C}'}" />
-            <Label Text="{Binding Order.Status, StringFormat='Status: {0}'}" />
-            <Label Text="{Binding Order.Location, StringFormat='Lokalizacja: {0}'}" IsVisible="{Binding Order.Location, Converter={StaticResource StringToBoolConverter}}" />
-            <Image Source="{Binding Order.PhotoPath}" HeightRequest="200" Aspect="AspectFit" IsVisible="{Binding Order.PhotoPath, Converter={StaticResource StringToBoolConverter}}" />
+        <StackLayout Padding="20" Spacing="20">
+            <!-- Header -->
+            <Label Text="Szczegóły zamówienia" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            
+            <!-- Order Details Card -->
+            <Border Padding="20" 
+                    StrokeShape="RoundRectangle 16,16,16,16"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                <Border.Shadow>
+                    <Shadow Brush="#000" Offset="5,5" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <StackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" RowSpacing="12" ColumnSpacing="16">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Name -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Nazwa:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Order.Name}" FontSize="16" HorizontalTextAlignment="End" />
+                        
+                        <!-- Status -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Status:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Order.Status}" FontSize="16" HorizontalTextAlignment="End" />
+                        
+                        <!-- Amount -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Kwota:" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding Order.Amount, StringFormat='{0:C}'}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource BusinessGreen}" HorizontalTextAlignment="End" />
+                    </Grid>
+                    
+                    <!-- Location -->
+                    <StackLayout Spacing="4" IsVisible="{Binding Order.Location, Converter={StaticResource StringToBoolConverter}}">
+                        <Label Text="Lokalizacja:" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="{Binding Order.Location}" FontSize="14" />
+                    </StackLayout>
 
-            <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">
-                <Button Text="✏️ Edytuj" 
+                    <!-- Photo -->
+                    <StackLayout Spacing="4" IsVisible="{Binding Order.PhotoPath, Converter={StaticResource StringToBoolConverter}}">
+                        <Label Text="Zdjęcie:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0" />
+                        <Image Source="{Binding Order.PhotoPath}" HeightRequest="200" Aspect="AspectFit" />
+                    </StackLayout>
+                </StackLayout>
+            </Border>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*,*" 
+                  ColumnSpacing="12"
+                  Margin="0,20,0,0">
+                
+                <Button Grid.Column="0"
+                        Text="🔙 Powrót" 
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="{StaticResource Secondary}"
+                        CornerRadius="24"
+                        Padding="16,12" />
+
+                <Button Grid.Column="1"
+                        Text="✏️ Edytuj" 
                         Command="{Binding EditCommand}"
                         BackgroundColor="{StaticResource Primary}"
                         CornerRadius="24"
-                        Padding="20,12" />
-                
-                <Button Text="🗑️ Usuń" 
+                        Padding="16,12" />
+
+                <Button Grid.Column="2"
+                        Text="🗑️ Usuń" 
                         Command="{Binding DeleteCommand}"
                         BackgroundColor="{StaticResource Error}"
                         CornerRadius="24"
-                        Padding="20,12" />
-            </HorizontalStackLayout>
-            <Button Text="🔙 Powrót" 
-                    Command="{Binding GoBackCommand}"
-                    BackgroundColor="{StaticResource Secondary}"
-                    CornerRadius="24"
-                    Padding="20,12"
-                    HorizontalOptions="Center" 
-                    Margin="0,10,0,0"/>
-        </VerticalStackLayout>
+                        Padding="16,12" />
+            </Grid>
+        </StackLayout>
     </ScrollView>
 </ContentPage> 

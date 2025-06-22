@@ -1,5 +1,6 @@
 using BiznesApp.Models;
 using BiznesApp.Services;
+using BiznesApp.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace BiznesApp.ViewModels
         private async Task Edit()
         {
             if (Order == null) return;
-            await Shell.Current.GoToAsync("EditOrderPage", new Dictionary<string, object>
+            await Shell.Current.GoToAsync(nameof(EditOrderPage), new Dictionary<string, object>
             {
                 { "SelectedOrder", Order }
             });

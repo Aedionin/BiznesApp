@@ -36,6 +36,10 @@
                            FontSize="12" 
                            TextColor="{StaticResource Secondary}"
                            Margin="0,0,0,10" />
+                    <Label Text="{Binding CurrentOffer.Location}" 
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                           IsVisible="{Binding CurrentOffer.Location, Converter={StaticResource StringToBoolConverter}}" />
                     
                     <Label Text="Opis:" FontAttributes="Bold" FontSize="16" />
                     <Editor Placeholder="Wprowadź szczegółowy opis oferty" Text="{Binding CurrentOffer.Description}" AutoSize="TextChanges" MinimumHeightRequest="100" />
