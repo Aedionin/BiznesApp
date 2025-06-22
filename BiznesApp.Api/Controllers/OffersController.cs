@@ -44,6 +44,7 @@ namespace BiznesApp.Api.Controllers
             offer.Description = updatedOffer.Description;
             offer.Price = updatedOffer.Price;
             offer.Status = updatedOffer.Status;
+            offer.Location = updatedOffer.Location;
             
             await _context.SaveChangesAsync();
 

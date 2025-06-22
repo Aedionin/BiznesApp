@@ -11,6 +11,7 @@
             <Label Text="{Binding Order.Name}" FontSize="Large" FontAttributes="Bold" />
             <Label Text="{Binding Order.Amount, StringFormat='Kwota: {0:C}'}" />
             <Label Text="{Binding Order.Status, StringFormat='Status: {0}'}" />
+            <Label Text="{Binding Order.Location, StringFormat='Lokalizacja: {0}'}" IsVisible="{Binding Order.Location, Converter={StaticResource StringToBoolConverter}}" />
             <Image Source="{Binding Order.PhotoPath}" HeightRequest="200" Aspect="AspectFit" IsVisible="{Binding Order.PhotoPath, Converter={StaticResource StringToBoolConverter}}" />
 
             <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">

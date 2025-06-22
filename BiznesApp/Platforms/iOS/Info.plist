@@ -34,5 +34,11 @@
 	<string>Ta aplikacja potrzebuje dostępu do galerii, aby można było dodawać zdjęcia do zamówień.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Ta aplikacja potrzebuje dostępu do galerii, aby można było wybierać zdjęcia do zamówień.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do Twojej lokalizacji, aby dołączyć ją do tworzonych ofert.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do Twojej lokalizacji, aby dołączyć ją do tworzonych ofert.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do Twojej lokalizacji, aby dołączyć ją do tworzonych ofert.</string>
 </dict>
 </plist>

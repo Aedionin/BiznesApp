@@ -44,6 +44,7 @@ namespace BiznesApp.Api.Controllers
             order.Amount = updatedOrder.Amount;
             order.Status = updatedOrder.Status;
             order.PhotoPath = updatedOrder.PhotoPath;
+            order.Location = updatedOrder.Location;
             
             await _context.SaveChangesAsync();
 

@@ -7,4 +7,5 @@ public class Order
     public string Status { get; set; } = string.Empty;
     public decimal Amount { get; set; }
     public string? PhotoPath { get; set; }
+    public string? Location { get; set; }
 } 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using System.Net.Http.Json;
+using Microsoft.Maui.Devices;
 
 namespace BiznesApp
 {
@@ -25,6 +26,7 @@ namespace BiznesApp
     		builder.Logging.AddDebug();
 #endif
 
+            builder.Services.AddSingleton<IGeolocation>(Geolocation.Default);
             builder.Services.AddSingleton<IMediaPicker>(MediaPicker.Default);
             builder.Services.AddSingleton<IFilePicker>(FilePicker.Default);
 
@@ -44,6 +46,13 @@ namespace BiznesApp
                 client.BaseAddress = new Uri(baseAddress);
             });
 
+            // Konfiguracja HttpClient dla geokodowania (EditOfferViewModel)
+            builder.Services.AddHttpClient("GeocodingClient", client =>
+            {
+                client.BaseAddress = new Uri("https://nominatim.openstreetmap.org");
+                client.DefaultRequestHeaders.Add("User-Agent", "BiznesApp/1.0");
+            });
+
             // Rejestracja usług
             builder.Services.AddSingleton<Services.DatabaseService>();
 
@@ -54,7 +63,13 @@ namespace BiznesApp
             builder.Services.AddSingleton<SettingsViewModel>();
             builder.Services.AddSingleton<ReportsViewModel>();
             builder.Services.AddTransient<EditOrderViewModel>();
-            builder.Services.AddTransient<EditOfferViewModel>();
+            builder.Services.AddTransient<EditOfferViewModel>(provider =>
+            {
+                var dataService = provider.GetRequiredService<Services.DataService>();
+                var geolocation = provider.GetRequiredService<IGeolocation>();
+                var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("GeocodingClient");
+                return new EditOfferViewModel(dataService, geolocation, httpClient);
+            });
             builder.Services.AddTransient<OfferDetailsViewModel>();
             builder.Services.AddTransient<OrderDetailsViewModel>();
             builder.Services.AddTransient<RegisterViewModel>();

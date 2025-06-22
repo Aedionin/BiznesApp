@@ -2,10 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:BiznesApp.ViewModels"
+             xmlns:converters="clr-namespace:BiznesApp.Converters"
              x:DataType="vm:OfferDetailsViewModel"
              x:Class="BiznesApp.Views.OfferDetailsPage"
              Title="Szczegóły oferty"
              BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
         <StackLayout Padding="20" Spacing="20">
@@ -31,6 +38,10 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         
                         <!-- Name -->
@@ -45,9 +56,21 @@
                         <Label Grid.Row="2" Grid.Column="0" Text="Kwota:" FontAttributes="Bold" FontSize="16" />
                         <Label Grid.Row="2" Grid.Column="1" Text="{Binding Offer.Price, StringFormat='{0:C}'}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource BusinessGreen}" />
                         
+                        <!-- Location -->
+                        <Label Grid.Row="3" Grid.Column="0" Text="Lokalizacja:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Location, Converter={StaticResource IsNotNullConverter}}" />
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding Offer.Location}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Location, Converter={StaticResource IsNotNullConverter}}"/>
+                        
+                        <!-- Latitude -->
+                        <Label Grid.Row="4" Grid.Column="0" Text="Szer. geo.:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Latitude, Converter={StaticResource IsNotNullConverter}}" />
+                        <Label Grid.Row="4" Grid.Column="1" Text="{Binding Offer.Latitude}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Latitude, Converter={StaticResource IsNotNullConverter}}"/>
+
+                        <!-- Longitude -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="Dł. geo.:" FontAttributes="Bold" FontSize="16" IsVisible="{Binding Offer.Longitude, Converter={StaticResource IsNotNullConverter}}" />
+                        <Label Grid.Row="5" Grid.Column="1" Text="{Binding Offer.Longitude}" FontSize="16" HorizontalTextAlignment="End" IsVisible="{Binding Offer.Longitude, Converter={StaticResource IsNotNullConverter}}"/>
+
                         <!-- Description -->
-                        <Label Grid.Row="3" Grid.ColumnSpan="2" Text="Opis:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0"/>
-                        <Label Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding Offer.Description}" FontSize="14" />
+                        <Label Grid.Row="6" Grid.ColumnSpan="2" Text="Opis:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0"/>
+                        <Label Grid.Row="7" Grid.ColumnSpan="2" Text="{Binding Offer.Description}" FontSize="14" />
                     </Grid>
                 </StackLayout>
             </Border>

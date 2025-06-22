@@ -31,6 +31,12 @@
                     <Label Text="Kwota:" FontAttributes="Bold" FontSize="16" />
                     <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding CurrentOffer.Price}" />
                     
+                    <Label Text="Lokalizacja:" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="📍 Lokalizacja zostanie automatycznie pobrana z urządzenia" 
+                           FontSize="12" 
+                           TextColor="{StaticResource Secondary}"
+                           Margin="0,0,0,10" />
+                    
                     <Label Text="Opis:" FontAttributes="Bold" FontSize="16" />
                     <Editor Placeholder="Wprowadź szczegółowy opis oferty" Text="{Binding CurrentOffer.Description}" AutoSize="TextChanges" MinimumHeightRequest="100" />
                     

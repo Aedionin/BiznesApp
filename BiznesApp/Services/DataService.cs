@@ -92,13 +92,25 @@ namespace BiznesApp.Services
         public async Task AddOffer(Offer offer)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PostAsJsonAsync("/api/offers", offer);
+            var response = await _httpClient.PostAsJsonAsync("/api/offers", offer);
+            if (response.IsSuccessStatusCode)
+            {
+                var newOffer = await response.Content.ReadFromJsonAsync<Offer>();
+                if (newOffer != null)
+                {
+                    await _databaseService.SaveItemAsync(newOffer);
+                }
+            }
         }
 
         public async Task UpdateOffer(Offer updatedOffer)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PutAsJsonAsync($"/api/offers/{updatedOffer.Id}", updatedOffer);
+            var response = await _httpClient.PutAsJsonAsync($"/api/offers/{updatedOffer.Id}", updatedOffer);
+            if (response.IsSuccessStatusCode)
+            {
+                await _databaseService.SaveItemAsync(updatedOffer);
+            }
         }
 
         public async Task DeleteOffer(Offer offer)

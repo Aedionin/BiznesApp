@@ -10,6 +10,15 @@ public partial class EditOfferPage : ContentPage
 		BindingContext = viewModel;
 	}
 
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
+		if (BindingContext is EditOfferViewModel vm)
+		{
+			await vm.OnAppearing();
+		}
+	}
+
 	private async void OnCancelClicked(object sender, System.EventArgs e)
 	{
 		await Shell.Current.GoToAsync("..");

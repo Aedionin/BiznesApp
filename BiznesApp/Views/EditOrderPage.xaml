@@ -57,6 +57,13 @@
                         </Picker.Items>
                     </Picker>
                     
+                    <Label Text="Lokalizacja:" 
+                           FontAttributes="Bold" 
+                           FontSize="16"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <Entry Placeholder="Wprowadź lokalizację (np. adres)" 
+                           Text="{Binding CurrentOrder.Location}" />
+                    
                     <HorizontalStackLayout Spacing="12" Margin="0,10,0,0" HorizontalOptions="Center">
                         <Button Text="📎 Wybierz plik" 
                                 Command="{Binding PickFileCommand}"

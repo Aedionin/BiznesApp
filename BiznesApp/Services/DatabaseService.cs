@@ -2,6 +2,7 @@ using BiznesApp.Models;
 using SQLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace BiznesApp.Services
 {
@@ -31,6 +32,21 @@ namespace BiznesApp.Services
             await Init();
             await _database.DeleteAllAsync<T>();
             await _database.InsertAllAsync(items);
+        }
+
+        public async Task<int> SaveItemAsync<T>(T item) where T : new()
+        {
+            await Init();
+            var pk = typeof(T).GetProperty("Id")?.GetValue(item);
+            if (pk != null && (int)pk != 0)
+            {
+                var existingItem = await _database.FindAsync<T>(pk);
+                if (existingItem != null)
+                {
+                    return await _database.UpdateAsync(item);
+                }
+            }
+            return await _database.InsertAsync(item);
         }
     }
 } 
