@@ -31,7 +31,7 @@ namespace BiznesApp.ViewModels
         [RelayCommand]
         private async Task Logout()
         {
-            // TODO: Wyczyść dane użytkownika, tokeny itp.
+            SecureStorage.Remove("auth_token");
             await Shell.Current.GoToAsync("//LoginPage");
         }
     }

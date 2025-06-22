@@ -2,6 +2,8 @@
 using BiznesApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
+using System.Net.Http.Json;
 
 namespace BiznesApp
 {
@@ -23,9 +25,14 @@ namespace BiznesApp
     		builder.Logging.AddDebug();
 #endif
 
+            builder.Services.AddSingleton<HttpClient>();
+            builder.Services.AddSingleton<IMediaPicker>(MediaPicker.Default);
+            builder.Services.AddSingleton<IFilePicker>(FilePicker.Default);
+
             // Rejestracja usług
             builder.Services.AddSingleton<Services.DataService>();
             builder.Services.AddSingleton<Services.AuthService>();
+            builder.Services.AddSingleton<Services.DatabaseService>();
 
             // Rejestracja ViewModeli
             builder.Services.AddSingleton<LoginViewModel>();

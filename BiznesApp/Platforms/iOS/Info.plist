@@ -27,6 +27,12 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/appicon.appiconset</string>
+	<string>Resources/AppIcon/appicon.xcassets</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do aparatu, aby można było dodawać zdjęcia do zamówień.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do galerii, aby można było dodawać zdjęcia do zamówień.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ta aplikacja potrzebuje dostępu do galerii, aby można było wybierać zdjęcia do zamówień.</string>
 </dict>
 </plist>

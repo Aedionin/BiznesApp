@@ -9,7 +9,8 @@
 
     <Grid RowDefinitions="*,Auto,*" Padding="24">
         <!-- Title Area -->
-        <StackLayout Grid.Row="0" 
+        <StackLayout x:Name="TitleStack"
+                     Grid.Row="0" 
                      VerticalOptions="Center" 
                      HorizontalOptions="Center"
                      Spacing="16">
@@ -28,7 +29,8 @@
         </StackLayout>
 
         <!-- Registration Form -->
-        <Frame Grid.Row="1" 
+        <Frame x:Name="FormContainer"
+               Grid.Row="1" 
                Padding="24" 
                CornerRadius="20"
                HasShadow="True"
@@ -53,7 +55,8 @@
                 
                 <Label Text="{Binding ErrorMessage}" TextColor="Red" HorizontalOptions="Center" />
                 
-                <Button Text="✅ Zarejestruj" 
+                <Button x:Name="RegisterButton"
+                        Text="✅ Zarejestruj" 
                         Command="{Binding RegisterCommand}"
                         FontSize="16"
                         FontAttributes="Bold"

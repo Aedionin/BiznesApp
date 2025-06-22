@@ -15,12 +15,13 @@ namespace BiznesApp.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseAddress;
+        private readonly DatabaseService _databaseService;
 
-        public DataService()
+        public DataService(DatabaseService databaseService, HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            // Adres API. Używamy 10.0.2.2 dla emulatora Androida, aby uzyskać dostęp do localhost hosta.
+            _httpClient = httpClient;
             _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5136" : "http://localhost:5136";
+            _databaseService = databaseService;
         }
 
         private async Task SetAuthorizationHeader()
@@ -41,14 +42,27 @@ namespace BiznesApp.Services
 
         public async Task<ObservableCollection<Order>> GetOrders()
         {
-            await SetAuthorizationHeader();
-            var response = await _httpClient.GetAsync($"{_baseAddress}/api/orders");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var orders = await response.Content.ReadFromJsonAsync<ObservableCollection<Order>>();
-                return orders ?? new ObservableCollection<Order>();
+                await SetAuthorizationHeader();
+                var response = await _httpClient.GetAsync($"{_baseAddress}/api/orders");
+                if (response.IsSuccessStatusCode)
+                {
+                    var orders = await response.Content.ReadFromJsonAsync<List<Order>>();
+                    if(orders != null)
+                    {
+                        await _databaseService.SaveOrdersAsync(orders);
+                        return new ObservableCollection<Order>(orders);
+                    }
+                }
             }
-            return new ObservableCollection<Order>();
+            catch (HttpRequestException)
+            {
+                // API jest niedostępne, wczytaj z lokalnej bazy
+            }
+            
+            var localOrders = await _databaseService.GetOrdersAsync();
+            return new ObservableCollection<Order>(localOrders);
         }
 
         public async Task AddOrder(Order order)
@@ -73,14 +87,27 @@ namespace BiznesApp.Services
 
         public async Task<ObservableCollection<Offer>> GetOffers()
         {
-            await SetAuthorizationHeader();
-            var response = await _httpClient.GetAsync($"{_baseAddress}/api/offers");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var offers = await response.Content.ReadFromJsonAsync<ObservableCollection<Offer>>();
-                return offers ?? new ObservableCollection<Offer>();
+                await SetAuthorizationHeader();
+                var response = await _httpClient.GetAsync($"{_baseAddress}/api/offers");
+                if (response.IsSuccessStatusCode)
+                {
+                    var offers = await response.Content.ReadFromJsonAsync<List<Offer>>();
+                    if(offers != null)
+                    {
+                        await _databaseService.SaveOffersAsync(offers);
+                        return new ObservableCollection<Offer>(offers);
+                    }
+                }
             }
-            return new ObservableCollection<Offer>();
+            catch (HttpRequestException)
+            {
+                // API jest niedostępne, wczytaj z lokalnej bazy
+            }
+
+            var localOffers = await _databaseService.GetOffersAsync();
+            return new ObservableCollection<Offer>(localOffers);
         }
 
         public async Task AddOffer(Offer offer)

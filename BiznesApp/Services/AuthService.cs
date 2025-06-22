@@ -11,9 +11,9 @@ namespace BiznesApp.Services
         private readonly HttpClient _httpClient;
         private readonly string _baseAddress;
 
-        public AuthService()
+        public AuthService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient;
             // Adres API. Używamy 10.0.2.2 dla emulatora Androida, aby uzyskać dostęp do localhost hosta.
             _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5136" : "http://localhost:5136";
         }

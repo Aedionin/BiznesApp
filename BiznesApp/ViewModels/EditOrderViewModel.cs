@@ -6,16 +6,28 @@ using BiznesApp.Services;
 using BiznesApp.Models;
 using System.Threading.Tasks;
 using Plugin.LocalNotification;
+using Microsoft.Maui.Media;
+using System.Collections.ObjectModel;
 
 namespace BiznesApp.ViewModels
 {
-    [QueryProperty(nameof(CurrentOrder), "SelectedOrder")]
+    [QueryProperty(nameof(OrderId), "orderId")]
     public partial class EditOrderViewModel : ObservableObject
     {
         private readonly DataService _dataService;
+        private readonly IMediaPicker _mediaPicker;
 
         [ObservableProperty]
-        private Order _currentOrder;
+        private Order _currentOrder = new();
+
+        [ObservableProperty]
+        private string _title = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<string> _statuses = new();
+        
+        [ObservableProperty]
+        private string _orderId = string.Empty;
 
         [ObservableProperty]
         private ImageSource? _attachedPhoto;
@@ -23,10 +35,15 @@ namespace BiznesApp.ViewModels
         [ObservableProperty]
         private string? _displayFileName;
 
-        public EditOrderViewModel(DataService dataService)
+        [ObservableProperty]
+        private bool _isExistingOrder;
+
+        public EditOrderViewModel(DataService dataService, IMediaPicker mediaPicker)
         {
             _dataService = dataService;
-            _currentOrder = new Order();
+            _mediaPicker = mediaPicker;
+            Title = "Nowe zamówienie";
+            Statuses = new ObservableCollection<string> { "Nowe", "W realizacji", "Zakończone" };
         }
         
         partial void OnCurrentOrderChanged(Order value)
@@ -80,33 +97,23 @@ namespace BiznesApp.ViewModels
         [RelayCommand]
         private async Task TakePhoto()
         {
-            if (!MediaPicker.Default.IsCaptureSupported)
+            if (_mediaPicker.IsCaptureSupported)
             {
-                await Shell.Current.DisplayAlert("Błąd", "Twoje urządzenie nie obsługuje robienia zdjęć.", "OK");
-                return;
-            }
-
-            try
-            {
-                FileResult? photo = await MediaPicker.Default.CapturePhotoAsync();
-
+                FileResult photo = await _mediaPicker.CapturePhotoAsync();
                 if (photo != null)
                 {
-                    string localFilePath = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
-                    using (Stream sourceStream = await photo.OpenReadAsync())
-                    using (FileStream localFileStream = File.Create(localFilePath))
-                    {
-                        await sourceStream.CopyToAsync(localFileStream);
-                    }
-
-                    CurrentOrder.PhotoPath = localFilePath;
-                    AttachedPhoto = ImageSource.FromFile(localFilePath);
-                    DisplayFileName = photo.FileName;
+                    CurrentOrder.PhotoPath = photo.FullPath;
                 }
             }
-            catch (Exception)
+        }
+
+        [RelayCommand]
+        private async Task PickPhoto()
+        {
+            FileResult photo = await _mediaPicker.PickPhotoAsync();
+            if (photo != null)
             {
-                await Shell.Current.DisplayAlert("Błąd", "Nie udało się zrobić zdjęcia.", "OK");
+                CurrentOrder.PhotoPath = photo.FullPath;
             }
         }
 
