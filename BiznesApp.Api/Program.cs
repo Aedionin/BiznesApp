@@ -1,12 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BiznesApp.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Dodanie DbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddControllers();
 
 // Dodaj Swagger
@@ -56,11 +63,16 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // W środowisku deweloperskim możemy zostawić to puste lub dodać specyficzne narzędzia
 }
 
+// Włączamy Swaggera zawsze, aby był dostępny w Azure
+app.UseSwagger();
+app.UseSwaggerUI();
+
 // app.UseHttpsRedirection(); // Wyłączamy na czas dewelopmentu, aby uniknąć problemów z certyfikatem na emulatorze
+
+app.UseRouting(); // Jawne dodanie routingu
 
 // Użyj CORS
 app.UseCors("AllowAll");
@@ -88,6 +100,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+var baseAddress = "https://biznesapp-api-dk123-awf4dqcbctjfzb8.westeurope-01.azurewebsites.net";
 
 app.Run();
 

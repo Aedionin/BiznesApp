@@ -1,5 +1,6 @@
 using BiznesApp.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,18 +12,19 @@ namespace BiznesApp.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private static readonly List<User> Users = new();
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, ApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
-        public IActionResult Register(UserRegisterDto request)
+        public async Task<IActionResult> Register(UserRegisterDto request)
         {
-            if (Users.Any(u => u.Username == request.Username))
+            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
                 return BadRequest("User already exists.");
             }
@@ -31,20 +33,20 @@ namespace BiznesApp.Api.Controllers
 
             var user = new User
             {
-                Id = Users.Any() ? Users.Max(u => u.Id) + 1 : 1,
                 Username = request.Username,
                 PasswordHash = passwordHash
             };
 
-            Users.Add(user);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
             return Ok(new { Message = "User registered successfully" });
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserLoginDto request)
+        public async Task<IActionResult> Login(UserLoginDto request)
         {
-            var user = Users.FirstOrDefault(u => u.Username == request.Username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 return Unauthorized("Invalid credentials.");

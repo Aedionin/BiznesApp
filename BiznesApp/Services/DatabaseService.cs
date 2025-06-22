@@ -7,7 +7,7 @@ namespace BiznesApp.Services
 {
     public class DatabaseService
     {
-        private SQLiteAsyncConnection _database;
+        private SQLiteAsyncConnection? _database;
 
         private async Task Init()
         {
@@ -20,31 +20,17 @@ namespace BiznesApp.Services
             await _database.CreateTableAsync<Offer>();
         }
 
-        public async Task<List<Order>> GetOrdersAsync()
+        public async Task<List<T>> GetItems<T>() where T : new()
         {
             await Init();
-            return await _database.Table<Order>().ToListAsync();
+            return await _database.Table<T>().ToListAsync();
         }
 
-        public async Task<List<Offer>> GetOffersAsync()
+        public async Task SaveItems<T>(List<T> items)
         {
             await Init();
-            return await _database.Table<Offer>().ToListAsync();
-        }
-
-        public async Task SaveOrdersAsync(List<Order> orders)
-        {
-            await Init();
-            // Czyścimy tabelę i wstawiamy nowe dane, aby uniknąć duplikatów
-            await _database.DeleteAllAsync<Order>();
-            await _database.InsertAllAsync(orders);
-        }
-
-        public async Task SaveOffersAsync(List<Offer> offers)
-        {
-            await Init();
-            await _database.DeleteAllAsync<Offer>();
-            await _database.InsertAllAsync(offers);
+            await _database.DeleteAllAsync<T>();
+            await _database.InsertAllAsync(items);
         }
     }
 } 

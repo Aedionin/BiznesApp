@@ -1,131 +1,110 @@
 using BiznesApp.Models;
-using BiznesApp.ViewModels;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using BiznesApp.Services;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.Maui.Controls;
 
 namespace BiznesApp.Services
 {
     public class DataService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseAddress;
         private readonly DatabaseService _databaseService;
 
-        public DataService(DatabaseService databaseService, HttpClient httpClient)
+        public DataService(HttpClient httpClient, DatabaseService databaseService)
         {
             _httpClient = httpClient;
-            _baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5136" : "http://localhost:5136";
             _databaseService = databaseService;
         }
 
         private async Task SetAuthorizationHeader()
         {
             var token = await SecureStorage.GetAsync("auth_token");
-            if (!string.IsNullOrEmpty(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-            else
-            {
-                // Wyczyść nagłówek, jeśli token jest pusty - np. po wylogowaniu
-                _httpClient.DefaultRequestHeaders.Authorization = null;
-            }
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
-        // --- Metody dla Zamówień ---
-
-        public async Task<ObservableCollection<Order>> GetOrders()
+        // Zamówienia
+        public async Task<List<Order>> GetOrders()
         {
             try
             {
                 await SetAuthorizationHeader();
-                var response = await _httpClient.GetAsync($"{_baseAddress}/api/orders");
+                var response = await _httpClient.GetAsync("/api/orders");
                 if (response.IsSuccessStatusCode)
                 {
                     var orders = await response.Content.ReadFromJsonAsync<List<Order>>();
-                    if(orders != null)
+                    if (orders != null)
                     {
-                        await _databaseService.SaveOrdersAsync(orders);
-                        return new ObservableCollection<Order>(orders);
+                        await _databaseService.SaveItems(orders);
+                        return orders;
                     }
                 }
             }
-            catch (HttpRequestException)
+            catch (Exception)
             {
-                // API jest niedostępne, wczytaj z lokalnej bazy
+                // Ignoruj błędy połączenia, zwróć dane z lokalnej bazy danych
             }
-            
-            var localOrders = await _databaseService.GetOrdersAsync();
-            return new ObservableCollection<Order>(localOrders);
+
+            return await _databaseService.GetItems<Order>();
         }
 
         public async Task AddOrder(Order order)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PostAsJsonAsync($"{_baseAddress}/api/orders", order);
+            await _httpClient.PostAsJsonAsync("/api/orders", order);
         }
 
         public async Task UpdateOrder(Order updatedOrder)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PutAsJsonAsync($"{_baseAddress}/api/orders/{updatedOrder.Id}", updatedOrder);
+            await _httpClient.PutAsJsonAsync($"/api/orders/{updatedOrder.Id}", updatedOrder);
         }
 
         public async Task DeleteOrder(Order order)
         {
             await SetAuthorizationHeader();
-            await _httpClient.DeleteAsync($"{_baseAddress}/api/orders/{order.Id}");
+            await _httpClient.DeleteAsync($"/api/orders/{order.Id}");
         }
 
-        // --- Metody dla Ofert ---
-
-        public async Task<ObservableCollection<Offer>> GetOffers()
+        // Oferty
+        public async Task<List<Offer>> GetOffers()
         {
             try
             {
                 await SetAuthorizationHeader();
-                var response = await _httpClient.GetAsync($"{_baseAddress}/api/offers");
+                var response = await _httpClient.GetAsync("/api/offers");
                 if (response.IsSuccessStatusCode)
                 {
                     var offers = await response.Content.ReadFromJsonAsync<List<Offer>>();
-                    if(offers != null)
+                    if (offers != null)
                     {
-                        await _databaseService.SaveOffersAsync(offers);
-                        return new ObservableCollection<Offer>(offers);
+                        await _databaseService.SaveItems(offers);
+                        return offers;
                     }
                 }
             }
-            catch (HttpRequestException)
+            catch (Exception)
             {
-                // API jest niedostępne, wczytaj z lokalnej bazy
+                // Ignoruj błędy połączenia, zwróć dane z lokalnej bazy danych
             }
-
-            var localOffers = await _databaseService.GetOffersAsync();
-            return new ObservableCollection<Offer>(localOffers);
+            return await _databaseService.GetItems<Offer>();
         }
 
         public async Task AddOffer(Offer offer)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PostAsJsonAsync($"{_baseAddress}/api/offers", offer);
+            await _httpClient.PostAsJsonAsync("/api/offers", offer);
         }
 
         public async Task UpdateOffer(Offer updatedOffer)
         {
             await SetAuthorizationHeader();
-            await _httpClient.PutAsJsonAsync($"{_baseAddress}/api/offers/{updatedOffer.Id}", updatedOffer);
+            await _httpClient.PutAsJsonAsync($"/api/offers/{updatedOffer.Id}", updatedOffer);
         }
 
         public async Task DeleteOffer(Offer offer)
         {
             await SetAuthorizationHeader();
-            await _httpClient.DeleteAsync($"{_baseAddress}/api/offers/{offer.Id}");
+            await _httpClient.DeleteAsync($"/api/offers/{offer.Id}");
         }
     }
 } 

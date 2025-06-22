@@ -1,6 +1,7 @@
 using BiznesApp.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiznesApp.Api.Controllers
 {
@@ -9,31 +10,31 @@ namespace BiznesApp.Api.Controllers
     [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
-        private static List<Order> _orders = new List<Order>
+        private readonly ApplicationDbContext _context;
+
+        public OrdersController(ApplicationDbContext context)
         {
-            new Order { Id = 1, Name = "Zamówienie na komputery", Status = "W realizacji", Amount = 12000 },
-            new Order { Id = 2, Name = "Licencje na oprogramowanie", Status = "Zakończone", Amount = 4500 },
-            new Order { Id = 3, Name = "Szkolenie dla zespołu", Status = "Nowe", Amount = 8000 }
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Order>> GetOrders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return Ok(_orders);
+            return await _context.Orders.ToListAsync();
         }
 
         [HttpPost]
-        public ActionResult<Order> AddOrder([FromBody] Order order)
+        public async Task<ActionResult<Order>> AddOrder([FromBody] Order order)
         {
-            order.Id = _orders.Any() ? _orders.Max(o => o.Id) + 1 : 1;
-            _orders.Add(order);
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, order);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateOrder(int id, [FromBody] Order updatedOrder)
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] Order updatedOrder)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
+            var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -43,20 +44,23 @@ namespace BiznesApp.Api.Controllers
             order.Amount = updatedOrder.Amount;
             order.Status = updatedOrder.Status;
             order.PhotoPath = updatedOrder.PhotoPath;
+            
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
+            var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
 
-            _orders.Remove(order);
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
     }

@@ -1,6 +1,7 @@
 using BiznesApp.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiznesApp.Api.Controllers
 {
@@ -9,31 +10,31 @@ namespace BiznesApp.Api.Controllers
     [Route("api/[controller]")]
     public class OffersController : ControllerBase
     {
-        private static List<Offer> _offers = new List<Offer>
+        private readonly ApplicationDbContext _context;
+
+        public OffersController(ApplicationDbContext context)
         {
-            new Offer { Id = 1, Name = "Strona internetowa dla firmy X", Description = "Stworzenie nowoczesnej strony WWW.", Price = 5000, Status = "Wysłana" },
-            new Offer { Id = 2, Name = "Aplikacja mobilna dla sklepu", Description = "Projekt i wdrożenie aplikacji na Android/iOS.", Price = 25000, Status = "Zaakceptowana" },
-            new Offer { Id = 3, Name = "Optymalizacja SEO", Description = "Audyt i pozycjonowanie serwisu.", Price = 2000, Status = "Odrzucona" }
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Offer>> GetOffers()
+        public async Task<ActionResult<IEnumerable<Offer>>> GetOffers()
         {
-            return Ok(_offers);
+            return await _context.Offers.ToListAsync();
         }
 
         [HttpPost]
-        public ActionResult<Offer> AddOffer([FromBody] Offer offer)
+        public async Task<ActionResult<Offer>> AddOffer([FromBody] Offer offer)
         {
-            offer.Id = _offers.Any() ? _offers.Max(o => o.Id) + 1 : 1;
-            _offers.Add(offer);
+            _context.Offers.Add(offer);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetOffers), new { id = offer.Id }, offer);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateOffer(int id, [FromBody] Offer updatedOffer)
+        public async Task<IActionResult> UpdateOffer(int id, [FromBody] Offer updatedOffer)
         {
-            var offer = _offers.FirstOrDefault(o => o.Id == id);
+            var offer = await _context.Offers.FindAsync(id);
             if (offer == null)
             {
                 return NotFound();
@@ -43,20 +44,23 @@ namespace BiznesApp.Api.Controllers
             offer.Description = updatedOffer.Description;
             offer.Price = updatedOffer.Price;
             offer.Status = updatedOffer.Status;
+            
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteOffer(int id)
+        public async Task<IActionResult> DeleteOffer(int id)
         {
-            var offer = _offers.FirstOrDefault(o => o.Id == id);
+            var offer = await _context.Offers.FindAsync(id);
             if (offer == null)
             {
                 return NotFound();
             }
 
-            _offers.Remove(offer);
+            _context.Offers.Remove(offer);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
     }

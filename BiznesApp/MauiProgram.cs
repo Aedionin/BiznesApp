@@ -25,13 +25,26 @@ namespace BiznesApp
     		builder.Logging.AddDebug();
 #endif
 
-            builder.Services.AddSingleton<HttpClient>();
             builder.Services.AddSingleton<IMediaPicker>(MediaPicker.Default);
             builder.Services.AddSingleton<IFilePicker>(FilePicker.Default);
 
+            // --- Konfiguracja Klienta HTTP i Serwisów ---
+
+            var baseAddress = "https://biznesapp-api-dk123-awf4dqcbctfjfzb8.westeurope-01.azurewebsites.net";
+
+            // Konfiguracja HttpClient dla AuthService
+            builder.Services.AddHttpClient<Services.AuthService>(client =>
+            {
+                client.BaseAddress = new Uri(baseAddress);
+            });
+
+            // Konfiguracja HttpClient dla DataService
+            builder.Services.AddHttpClient<Services.DataService>(client =>
+            {
+                client.BaseAddress = new Uri(baseAddress);
+            });
+
             // Rejestracja usług
-            builder.Services.AddSingleton<Services.DataService>();
-            builder.Services.AddSingleton<Services.AuthService>();
             builder.Services.AddSingleton<Services.DatabaseService>();
 
             // Rejestracja ViewModeli

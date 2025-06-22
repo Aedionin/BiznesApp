@@ -29,12 +29,18 @@
         </StackLayout>
 
         <!-- Registration Form -->
-        <Frame x:Name="FormContainer"
+        <Border x:Name="FormContainer"
                Grid.Row="1" 
                Padding="24" 
-               CornerRadius="20"
-               HasShadow="True"
+               StrokeShape="RoundRectangle 20,20,20,20"
+               Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+            <Border.Shadow>
+                <Shadow Brush="#000"
+                        Offset="10,10"
+                        Radius="20"
+                        Opacity="0.1"/>
+            </Border.Shadow>
             <StackLayout Spacing="20">
                 <Entry Placeholder="Nazwa użytkownika" 
                        Text="{Binding Username}"
@@ -64,7 +70,7 @@
                         MinimumHeightRequest="50"
                         BackgroundColor="{StaticResource BusinessGreen}" />
             </StackLayout>
-        </Frame>
+        </Border>
 
         <!-- Footer / Navigation to Login -->
         <StackLayout Grid.Row="2" 
